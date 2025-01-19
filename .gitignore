@@ -1,0 +1,6 @@
+# Ignore Word and PDF files
+*.docx
+*.pdf
+
+# Exclude .vs folders
+**.vs/

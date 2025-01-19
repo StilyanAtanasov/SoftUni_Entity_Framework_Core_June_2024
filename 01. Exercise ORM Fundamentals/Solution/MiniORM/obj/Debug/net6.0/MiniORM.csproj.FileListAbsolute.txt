@@ -1,0 +1,12 @@
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\bin\Debug\net6.0\MiniORM.deps.json
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\bin\Debug\net6.0\MiniORM.dll
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\bin\Debug\net6.0\MiniORM.pdb
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.csproj.AssemblyReference.cache
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.GeneratedMSBuildEditorConfig.editorconfig
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.AssemblyInfoInputs.cache
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.AssemblyInfo.cs
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.csproj.CoreCompileInputs.cache
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.dll
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\refint\MiniORM.dll
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.pdb
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\ref\MiniORM.dll
