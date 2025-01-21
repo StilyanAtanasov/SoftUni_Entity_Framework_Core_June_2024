@@ -51,3 +51,4 @@ D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM.App\obj\Debug\net6.0\MiniORM.App.pdb
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM.App\obj\Debug\net6.0\MiniORM.App.genruntimeconfig.cache
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM.App\obj\Debug\net6.0\ref\MiniORM.App.dll
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM.App\obj\Debug\net6.0\MiniORM.App.sourcelink.json

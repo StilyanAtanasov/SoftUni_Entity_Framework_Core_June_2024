@@ -10,3 +10,4 @@ D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\refint\MiniORM.dll
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.pdb
 D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\ref\MiniORM.dll
+D:\My Documents\Stilyan\Programming\GitHub Repositories\Entity Framework Core\01. Exercise ORM Fundamentals\Solution\MiniORM\obj\Debug\net6.0\MiniORM.sourcelink.json

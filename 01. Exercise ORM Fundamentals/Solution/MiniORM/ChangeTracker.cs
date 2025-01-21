@@ -5,9 +5,9 @@ namespace MiniORM;
 
 public class ChangeTracker<T> where T : class, new()
 {
-    private readonly List<T> _entities = new();
-    private readonly List<T> _added = new();
-    private readonly List<T> _removed = new();
+    private readonly List<T> _entities;
+    private readonly List<T> _added;
+    private readonly List<T> _removed;
 
     public ChangeTracker(IEnumerable<T> entities)
     {
@@ -69,7 +69,6 @@ public class ChangeTracker<T> where T : class, new()
         return modifiedEntities;
     }
 
-
     private static bool IsModified(T entity, T proxyEntity)
     {
         var monitoredProperties = typeof(T).GetProperties()
@@ -84,5 +83,5 @@ public class ChangeTracker<T> where T : class, new()
     }
 
     private static IEnumerable<object> GetPrimaryKeyValues(IEnumerable<PropertyInfo> primaryKeys, T entity)
-        => primaryKeys.Select(pk => pk.GetValue(entity));
+        => primaryKeys.Select(pk => pk.GetValue(entity))!;
 }

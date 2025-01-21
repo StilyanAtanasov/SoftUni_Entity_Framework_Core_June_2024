@@ -52,12 +52,12 @@ public abstract class DbContext
             {
                 foreach (IEnumerable dbSet in dbSets)
                 {
-                    var persistMethod = typeof(DbContext)
-                        .GetMethod("Persist", BindingFlags.NonPublic | BindingFlags.Instance)
-                        .MakeGenericMethod(dbSet.GetType());
-
                     try
                     {
+                        var persistMethod = typeof(DbContext)
+                            .GetMethod(nameof(Persist), BindingFlags.NonPublic | BindingFlags.Instance)!
+                            .MakeGenericMethod(dbSet.GetType().GetGenericArguments().First());
+
                         try
                         {
                             persistMethod.Invoke(this, new object[] { dbSet });
@@ -103,7 +103,7 @@ public abstract class DbContext
             var dbSetProperty = dbSet.Value;
 
             var populateDbSetGeneric = typeof(DbContext)
-                .GetMethod("PopulateDbSet", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetMethod(nameof(PopulateDbSet), BindingFlags.NonPublic | BindingFlags.Instance)
                 .MakeGenericMethod(dbSetType);
             populateDbSetGeneric.Invoke(this, new object[] { dbSetProperty });
         }
@@ -123,7 +123,7 @@ public abstract class DbContext
         {
             var dbSetType = dbSetProperty.Key;
             var mapRelationsGeneric = typeof(DbContext)
-                .GetMethod("MapRelations", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetMethod(nameof(MapRelations), BindingFlags.NonPublic | BindingFlags.Instance)
                 .MakeGenericMethod(dbSetType);
             var dbSet = dbSetProperty.Value.GetValue(this);
             mapRelationsGeneric.Invoke(this, new[] { dbSet });
@@ -144,7 +144,7 @@ public abstract class DbContext
         {
             var collectionType = collection.PropertyType.GenericTypeArguments.First();
             var mapCollectionMethod = typeof(DbContext)
-                .GetMethod("MapCollection", BindingFlags.NonPublic | BindingFlags.Instance)
+                .GetMethod(nameof(MapCollection), BindingFlags.NonPublic | BindingFlags.Instance)
                 .MakeGenericMethod(entityType, collectionType);
             mapCollectionMethod.Invoke(this, new object[] { dbSet, collection });
         }

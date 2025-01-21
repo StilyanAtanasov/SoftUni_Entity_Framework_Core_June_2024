@@ -9,5 +9,5 @@ public class Project
 
     [Required]
     public string Name { get; set; }
-    public ICollection<EmployeeProject> EmployeeProjects { get; }
+    public ICollection<EmployeeProject> EmployeeProjects { get; set; }
 }
