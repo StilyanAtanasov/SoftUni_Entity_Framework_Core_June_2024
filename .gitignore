@@ -2,5 +2,8 @@
 *.docx
 *.pdf
 
-# Exclude .vs folders
+
+# Exclude .vs, bin and obj folders
 **.vs/
+**bin/
+**obj/
