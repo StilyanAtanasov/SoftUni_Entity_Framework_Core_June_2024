@@ -42,5 +42,6 @@ public class Game
     public string Result { get; set; } = null!;
 
     public ICollection<PlayerStatistic> PlayersStatistics { get; set; } = new HashSet<PlayerStatistic>();
+
     public ICollection<Bet> Bets { get; set; } = new HashSet<Bet>();
 }
