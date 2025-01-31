@@ -6,6 +6,8 @@ namespace P02_FootballBetting.Data;
 
 public class FootballBettingContext : DbContext
 {
+    public FootballBettingContext() { }
+
     public FootballBettingContext(DbContextOptions<FootballBettingContext> options)
         : base(options) { }
 
@@ -23,6 +25,7 @@ public class FootballBettingContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfiguration(new PlayerStatisticConfig());
+        modelBuilder.ApplyConfiguration(new TeamConfig());
 
         base.OnModelCreating(modelBuilder);
     }
