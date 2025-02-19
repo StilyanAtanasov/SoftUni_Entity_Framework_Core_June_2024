@@ -3,54 +3,44 @@ using CarDealer.DTOs.Export;
 using CarDealer.DTOs.Import;
 using CarDealer.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Text.Json;
+using System.Xml.Serialization;
 
 namespace CarDealer;
 
 public class StartUp
 {
-    public static readonly JsonSerializerOptions ImportSerializerSettings = new()
-    {
-        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-    };
-
-    public static readonly JsonSerializerOptions ExportSerializerSettings = new()
-    {
-        WriteIndented = true
-    };
-
     public static void Main()
     {
-        CarDealerContext context = new();
+        using CarDealerContext context = new();
 
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
         // --- Query 9. Import Suppliers ---
-        string suppliers = File.ReadAllText("../../../Datasets/suppliers.json");
+        string suppliers = File.ReadAllText("../../../Datasets/suppliers.xml");
         Console.WriteLine(ImportSuppliers(context, suppliers));
 
         // --- Query 10. Import Parts ---
-        string parts = File.ReadAllText("../../../Datasets/parts.json");
+        string parts = File.ReadAllText("../../../Datasets/parts.xml");
         Console.WriteLine(ImportParts(context, parts));
 
         // --- Query 11. Import Cars ---
-        string cars = File.ReadAllText("../../../Datasets/cars.json");
+        string cars = File.ReadAllText("../../../Datasets/cars.xml");
         Console.WriteLine(ImportCars(context, cars));
 
         // --- Query 12. Import Customers ---
-        string customers = File.ReadAllText("../../../Datasets/customers.json");
+        string customers = File.ReadAllText("../../../Datasets/customers.xml");
         Console.WriteLine(ImportCustomers(context, customers));
 
         // --- Query 13. Import Sales ---
-        string sales = File.ReadAllText("../../../Datasets/sales.json");
+        string sales = File.ReadAllText("../../../Datasets/sales.xml");
         Console.WriteLine(ImportSales(context, sales));
 
-        // --- Query 14. Export Ordered Customers ---
-        Console.WriteLine(GetOrderedCustomers(context));
+        // --- Query 14. Export Cars With Distance ---
+        Console.WriteLine(GetCarsWithDistance(context));
 
-        // --- Query 15. Export Cars from Make Toyota ---
-        Console.WriteLine(GetCarsFromMakeToyota(context));
+        // --- Query 15. Export Cars from Make BMW ---
+        Console.WriteLine(GetCarsFromMakeBmw(context));
 
         // --- Query 16. Export Local Suppliers ---
         Console.WriteLine(GetLocalSuppliers(context));
@@ -66,9 +56,9 @@ public class StartUp
     }
 
     // --- Query 9. Import Suppliers ---
-    public static string ImportSuppliers(CarDealerContext context, string inputJson)
+    public static string ImportSuppliers(CarDealerContext context, string inputXml)
     {
-        ImportSupplierDto[] suppliersDto = JsonSerializer.Deserialize<ImportSupplierDto[]>(inputJson, ImportSerializerSettings)!;
+        ImportSupplierDto[] suppliersDto = DeserializeXml<ImportSupplierDto[]>(inputXml, "Suppliers");
 
         Supplier[] suppliers = suppliersDto
             .Select(s => new Supplier
@@ -81,13 +71,13 @@ public class StartUp
         context.Suppliers.AddRange(suppliers);
         context.SaveChanges();
 
-        return $"Successfully imported {suppliers.Length}.";
+        return $"Successfully imported {suppliers.Length}";
     }
 
     // --- Query 10. Import Parts ---
-    public static string ImportParts(CarDealerContext context, string inputJson)
+    public static string ImportParts(CarDealerContext context, string inputXml)
     {
-        ImportPartDto[] partsDto = JsonSerializer.Deserialize<ImportPartDto[]>(inputJson, ImportSerializerSettings)!;
+        ImportPartDto[] partsDto = DeserializeXml<ImportPartDto[]>(inputXml, "Parts");
 
         Part[] parts = partsDto
             .Where(p => context.Suppliers.Any(s => s.Id == p.SupplierId))
@@ -103,13 +93,13 @@ public class StartUp
         context.Parts.AddRange(parts);
         context.SaveChanges();
 
-        return $"Successfully imported {parts.Length}.";
+        return $"Successfully imported {parts.Length}";
     }
 
     // --- Query 11. Import Cars ---
-    public static string ImportCars(CarDealerContext context, string inputJson)
+    public static string ImportCars(CarDealerContext context, string inputXml)
     {
-        ImportCarDto[] carsDto = JsonSerializer.Deserialize<ImportCarDto[]>(inputJson, ImportSerializerSettings)!;
+        ImportCarDto[] carsDto = DeserializeXml<ImportCarDto[]>(inputXml, "Cars");
 
         Car[] cars = carsDto
             .Select(c => new Car
@@ -118,23 +108,23 @@ public class StartUp
                 Model = c.Model,
                 TraveledDistance = c.TraveledDistance,
                 PartsCars = c.PartsId
-                    .Where(p => context.Parts.Any(pt => pt.Id == p))
-                    .Distinct()
-                    .Select(p => new PartCar { PartId = p })
-                    .ToArray()
+                    .Where(p => context.Parts.Any(pt => pt.Id == p.Id))
+                    .DistinctBy(p => p.Id)
+                    .Select(p => new PartCar { PartId = p.Id })
+                    .ToList()
             })
             .ToArray();
 
         context.Cars.AddRange(cars);
         context.SaveChanges();
 
-        return $"Successfully imported {cars.Length}.";
+        return $"Successfully imported {cars.Length}";
     }
 
     // --- Query 12. Import Customers ---
-    public static string ImportCustomers(CarDealerContext context, string inputJson)
+    public static string ImportCustomers(CarDealerContext context, string inputXml)
     {
-        ImportCustomerDto[] customersDto = JsonSerializer.Deserialize<ImportCustomerDto[]>(inputJson, ImportSerializerSettings)!;
+        ImportCustomerDto[] customersDto = DeserializeXml<ImportCustomerDto[]>(inputXml, "Customers");
 
         Customer[] customers = customersDto
             .Select(c => new Customer
@@ -148,15 +138,16 @@ public class StartUp
         context.Customers.AddRange(customers);
         context.SaveChanges();
 
-        return $"Successfully imported {customers.Length}.";
+        return $"Successfully imported {customers.Length}";
     }
 
     // --- Query 13 Import Sales ---
-    public static string ImportSales(CarDealerContext context, string inputJson)
+    public static string ImportSales(CarDealerContext context, string inputXml)
     {
-        ImportSaleDto[] salesDto = JsonSerializer.Deserialize<ImportSaleDto[]>(inputJson, ImportSerializerSettings)!;
+        ImportSaleDto[] salesDto = DeserializeXml<ImportSaleDto[]>(inputXml, "Sales");
 
         Sale[] sales = salesDto
+            .Where(s => context.Cars.Any(c => c.Id == s.CarId))
             .Select(s => new Sale
             {
                 Discount = s.Discount,
@@ -168,40 +159,41 @@ public class StartUp
         context.Sales.AddRange(sales);
         context.SaveChanges();
 
-        return $"Successfully imported {sales.Length}.";
+        return $"Successfully imported {sales.Length}";
     }
 
-    // --- Query 14. Export Ordered Customers ---
-    public static string GetOrderedCustomers(CarDealerContext context)
-    {
-        ExportCustomerDto[] customers = context.Customers
-            .AsNoTracking()
-            .Select(c => new ExportCustomerDto
-            {
-                Name = c.Name,
-                BirthDate = c.BirthDate,
-                IsYoungDriver = c.IsYoungDriver
-            })
-            .OrderBy(c => c.BirthDate)
-            .ThenBy(c => c.IsYoungDriver)
-            .ToArray();
-
-        string json = JsonSerializer.Serialize(customers, ExportSerializerSettings);
-        // File.WriteAllText("../../../Results/ordered-customers.json", json);
-
-        return json;
-    }
-
-    // --- Query 15. Export Cars from Make Toyota ---
-    public static string GetCarsFromMakeToyota(CarDealerContext context)
+    // --- Query 14. Export Cars With Distance ---
+    public static string GetCarsWithDistance(CarDealerContext context)
     {
         ExportCarDto[] cars = context.Cars
             .AsNoTracking()
-            .Where(c => c.Make == "Toyota")
+            .Where(c => c.TraveledDistance > 2_000_000)
             .Select(c => new ExportCarDto
             {
-                Id = c.Id,
                 Make = c.Make,
+                Model = c.Model,
+                TraveledDistance = c.TraveledDistance
+            })
+            .OrderBy(c => c.Make)
+            .ThenBy(c => c.Model)
+            .Take(10)
+            .ToArray();
+
+        string xml = SerializeXml(cars, "cars");
+        // File.WriteAllText("../../../Results/cars.xml", xml);
+
+        return xml;
+    }
+
+    // --- Query 15. Export Cars from Make BMW ---
+    public static string GetCarsFromMakeBmw(CarDealerContext context)
+    {
+        ExportCarWithoutMakeDto[] cars = context.Cars
+            .AsNoTracking()
+            .Where(c => c.Make == "BMW")
+            .Select(c => new ExportCarWithoutMakeDto
+            {
+                Id = c.Id,
                 Model = c.Model,
                 TraveledDistance = c.TraveledDistance
             })
@@ -209,10 +201,10 @@ public class StartUp
             .ThenByDescending(c => c.TraveledDistance)
             .ToArray();
 
-        string json = JsonSerializer.Serialize(cars, ExportSerializerSettings);
-        // File.WriteAllText("../../../Results/toyota-cars.json", json);
+        string xml = SerializeXml(cars, "cars");
+        // File.WriteAllText("../../../Results/bmw-cars.xml", xml);
 
-        return json;
+        return xml;
     }
 
     // --- Query 16. Export Local Suppliers ---
@@ -229,10 +221,10 @@ public class StartUp
             })
             .ToArray();
 
-        string json = JsonSerializer.Serialize(suppliers, ExportSerializerSettings);
-        // File.WriteAllText("../../../Results/local-suppliers.json", json);
+        string xml = SerializeXml(suppliers, "suppliers");
+        // File.WriteAllText("../../../Results/local-suppliers.xml", xml);
 
-        return json;
+        return xml;
     }
 
     // --- Query 17. Export Cars with Their List of Parts ---
@@ -243,26 +235,27 @@ public class StartUp
             .AsNoTracking()
             .Select(cp => new ExportCarPartsDto
             {
-                Car = new ExportCarWithoutIdDto
-                {
-                    Make = cp.Make,
-                    Model = cp.Model,
-                    TraveledDistance = cp.TraveledDistance
-                },
+                Make = cp.Make,
+                Model = cp.Model,
+                TraveledDistance = cp.TraveledDistance,
                 Parts = cp.PartsCars
-                    .Select(pc => new ExportPartDto
+                    .Select(p => new ExportPartDto
                     {
-                        Name = pc.Part.Name,
-                        Price = pc.Part.Price.ToString("F2"),
+                        Name = p.Part.Name,
+                        Price = p.Part.Price,
                     })
-                    .ToHashSet()
+                    .OrderByDescending(p => p.Price)
+                    .ToList()
             })
+            .OrderByDescending(cp => cp.TraveledDistance)
+            .ThenBy(cp => cp.Model)
+            .Take(5)
             .ToArray();
 
-        string json = JsonSerializer.Serialize(carParts, ExportSerializerSettings);
-        // File.WriteAllText("../../../Results/cars-and-parts.json", json);
+        string xml = SerializeXml(carParts, "cars");
+        // File.WriteAllText("../../../Results/cars-and-parts.xml", xml);
 
-        return json;
+        return xml;
     }
 
     // --- Query 18. Export Total Sales By Customer ---
@@ -275,22 +268,21 @@ public class StartUp
             {
                 FullName = c.Name,
                 BoughtCars = c.Sales.Count,
-                SpentMoney = c.Sales
-                    .SelectMany(s => s.Car.PartsCars)
-                    .Sum(pc => pc.Part.Price)
+                SpentMoney = c.IsYoungDriver ?
+                    (decimal)c.Sales
+                        .SelectMany(s => s.Car.PartsCars)
+                        .Sum(pc => Math.Round((double)pc.Part.Price * 0.95, 2))
+                    : (decimal)c.Sales
+                        .SelectMany(s => s.Car.PartsCars)
+                        .Sum(pc => (double)pc.Part.Price)
             })
             .OrderByDescending(c => c.SpentMoney)
-            .ThenByDescending(c => c.BoughtCars)
             .ToArray();
 
-        string json = JsonSerializer.Serialize(customers, new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
-        // File.WriteAllText("../../../Results/customers-total-sales.json", json);
+        string xml = SerializeXml(customers, "customers");
+        // File.WriteAllText("../../../Results/customers-total-sales.xml", xml);
 
-        return json;
+        return xml;
     }
 
     // --- Query 19. Export Sales with Applied Discount ---
@@ -300,27 +292,42 @@ public class StartUp
             .AsNoTracking()
             .Select(s => new ExportSalesDto
             {
-                Car = new ExportCarWithoutIdDto
+                Car = new ExportCarUsingAttributesDto
                 {
                     Make = s.Car.Make,
                     Model = s.Car.Model,
                     TraveledDistance = s.Car.TraveledDistance
                 },
                 CustomerName = s.Customer.Name,
-                Discount = s.Discount.ToString("F2"),
-                Price = s.Car.PartsCars.Sum(pc => pc.Part.Price).ToString("F2"),
-                PriceWithDiscount = (s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100)).ToString("F2")
+                Discount = (int)s.Discount,
+                Price = s.Car.PartsCars.Sum(pc => pc.Part.Price),
+                PriceWithDiscount = (double)(s.Car.PartsCars.Sum(pc => pc.Part.Price) * (1 - s.Discount / 100))
             })
-            .Take(10)
             .ToArray();
 
-        string json = JsonSerializer.Serialize(sales, new JsonSerializerOptions
-        {
-            WriteIndented = true,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        });
-        // File.WriteAllText("../../../Results/sales-discounts.json", json);
+        string xml = SerializeXml(sales, "sales");
+        // File.WriteAllText("../../../Results/sales-discounts.xml", xml);
 
-        return json;
+        return xml;
+    }
+
+    private static T DeserializeXml<T>(string xmlSerialized, string root)
+    {
+        XmlSerializer serializer = new(typeof(T), new XmlRootAttribute(root));
+        using StringReader reader = new(xmlSerialized);
+
+        return (T)serializer.Deserialize(reader)!;
+    }
+
+    private static string SerializeXml<T>(T dto, string rootElement)
+    {
+        XmlSerializer serializer = new(typeof(T), new XmlRootAttribute(rootElement));
+        using StringWriter writer = new();
+
+        XmlSerializerNamespaces namespaces = new();
+        namespaces.Add("", "");
+
+        serializer.Serialize(writer, dto, namespaces);
+        return writer.ToString();
     }
 }
