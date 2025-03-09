@@ -1,0 +1,70 @@
+﻿@model TownFormModel;
+
+@{
+    ViewBag.Title = @Model.Name;
+}
+
+<h1 class="text-center">@ViewBag.Title</h1>
+<hr />
+
+<div class="row mx-auto">
+    <div class="col-sm-12 offset-lg-2 col-lg-8 offset-xl-3 col-xl-6">
+	    <div class="mb-3">
+		    <p class="font-weight-bold">Town Name: @Model.Name</p>
+		    <span asp-validation-for="Name" class="text-danger"></span>
+	    </div>
+        <hr/>
+        <h3 style="text-align: center;">Events</h3>
+        <br/>
+        <section class="d-flex flex-column" style="gap: 2rem">
+            @if (!Model.Events.Any())
+            {
+                <h6 style="text-align: center;">No events yet!</h6>
+            }
+            else 
+            {
+	            <h5>Upcoming</h5>
+				@if (!Model.Events.Any(e => DateTime.Compare(e.End, DateTime.Now) >= 0))
+				{
+					<h6 style="text-align: center;">None</h6>
+				}
+				else
+				{
+		            @foreach (var item in Model.Events.Where(e => DateTime.Compare(e.End, DateTime.Now) >= 0))
+		            {
+			            <div class="d-flex flex-row" style="align-items: center; gap: 0.7rem">
+				            <p style="margin: 0;">@item.Name</p>
+				            <p style="margin: 0;"> - </p>
+				            <a asp-controller="Event" asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+			            </div>
+		            }
+				}
+
+	            <h5>Past</h5>
+	            @if (!Model.Events.Any(e => DateTime.Compare(e.End, DateTime.Now) < 0))
+	            {
+		            <h6 >None</h6>
+	            }
+	            else
+	            {
+		            @foreach (var item in Model.Events.Where(e => DateTime.Compare(e.End, DateTime.Now) < 0))
+		            {
+			            <div class="d-flex flex-row" style="align-items: center; gap: 0.7rem">
+				            <p style="margin: 0;">@item.Name</p>
+				            <p style="margin: 0;"> - </p>
+				            <a asp-controller="Event" asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+			            </div>
+		            }
+	            }
+            }
+        </section>
+        <br/>
+        <hr/>
+	    <div class="d-flex flex-row justify-content-center" style="gap: 1.5rem">
+            <a asp-controller="Town" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
+            <form asp-controller="Town" asp-action="Delete" asp-route-id="@Model.Id" method="Post">
+                <input type="submit" value="Delete" class="btn btn-danger" />
+            </form>
+        </div>
+    </div>
+</div>

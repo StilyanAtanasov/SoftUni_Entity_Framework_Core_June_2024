@@ -1,0 +1,39 @@
+﻿@model IEnumerable<TownFormModel>
+
+@{
+    ViewData["Title"] = "Explore All Towns";
+}
+
+<h1 class="text-center">@ViewBag.Title</h1>
+
+<p class="text-center">View All of the Towns</p>
+
+<hr />
+<div class="text-center row" style="justify-content: center">
+    <table class="table" style="width: 35vw">
+        <thead>
+            <tr>
+                <th scope="col"></th>
+                <th scope="col">Name</th>
+            </tr>
+        </thead>
+        <tbody class="table-group-divider">
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <th scope="row"></th>
+                    <td>@item.Name</td>
+	                <td> 
+                        <div class="d-flex flex-row" style="padding-left:1rem; gap: 0.7rem; justify-content:center">
+                            <a asp-controller="Town" asp-action="Details" asp-route-id="@item.Id" class="btn btn-secondary">Details</a>
+                            <a asp-controller="Town" asp-action="Edit" asp-route-id="@item.Id" class="btn btn-primary">Edit</a>
+                            <form asp-controller="Town" asp-action="Delete" asp-route-id="@item.Id" method="Post">
+                                <input type="submit" value="Delete" class="btn btn-danger" />
+                            </form>
+                          </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
