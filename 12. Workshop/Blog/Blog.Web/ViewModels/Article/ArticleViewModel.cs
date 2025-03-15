@@ -1,6 +1,6 @@
 ﻿namespace Blog.Web.ViewModels.Article;
 
-public class ArticleCardViewModel
+public class ArticleViewModel
 {
     public int Id { get; set; }
 

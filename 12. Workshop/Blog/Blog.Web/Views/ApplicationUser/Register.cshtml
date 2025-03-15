@@ -13,12 +13,12 @@
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="text-center mb-3">
                 <label asp-for="@Model.Username">Username</label>
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.Username" />
+                <input class="form-control" autocomplete="username" aria-required="true" asp-for="@Model.Username" />
                 <span asp-validation-for="@Model.Username" class="text-danger"></span>
             </div>
             <div class="text-center mb-3">
                 <label asp-for="@Model.Email">Email</label>
-                <input class="form-control " autocomplete="username" aria-required="true" asp-for="@Model.Email" />
+                <input class="form-control " autocomplete="email" aria-required="true" asp-for="@Model.Email" />
                 <span asp-validation-for="@Model.Email" class="text-danger"></span>
             </div>
             <div class="text-center mb-3">

@@ -1,4 +1,4 @@
-﻿@* @model ArticleViewModel;
+﻿@model ArticleViewModel;
 
 @{
     ViewBag.Title = "View Article Details";
@@ -22,8 +22,8 @@
             <span asp-validation-for="CreatedOn" class="text-danger"></span>
         </div>
         <div class="mb-3">
-            <p asp-for="End" class="form-label font-weight-bold"><span class="fw-bold">Category: </span>@Model.Category</p>
-            <span asp-validation-for="Category" class="text-danger"></span>
+            <p asp-for="End" class="form-label font-weight-bold"><span class="fw-bold">Category: </span>@Model.Genre</p>
+            <span asp-validation-for="Genre" class="text-danger"></span>
         </div>
         <div class="mb-3">
             <p asp-for="End" class="form-label font-weight-bold"><span class="fw-bold">Content: </span>@Model.Content</p>
@@ -34,10 +34,10 @@
             {
                 <a asp-controller="Article" asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Edit</a>
                  <form asp-controller="Article" asp-action="Delete" asp-route-id="@Model.Id" method="Post">
-                <input type="submit" value="Delete" class="btn btn-primary" />
+                <input type="submit" value="Delete" class="btn btn-danger" />
             </form>
             }
-            <a asp-controller="Article" asp-action="All" asp-route-id="@Model.Id" class="btn btn-primary">Back</a>
+            <a asp-controller="Article" asp-action="All" asp-route-id="@Model.Id" class="btn btn-secondary">Back</a>
         </div>
     </div>
 </div>
@@ -46,4 +46,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
- *@

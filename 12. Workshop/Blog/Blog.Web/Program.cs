@@ -7,6 +7,7 @@ using Blog.Data.Common;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using static Blog.Common.CookieConstraints;
 
 namespace Blog.Web
 {
@@ -16,24 +17,24 @@ namespace Blog.Web
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            // Add services to the container.
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services
                 .AddDbContext<BlogDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            /*builder.Services
-                .AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
-                .AddEntityFrameworkStores<BlogDbContext>();*/
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddHttpContextAccessor();
 
             builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(options =>
                 {
-                    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+                    options.LoginPath = "/ApplicationUser/Login";
+                    options.LogoutPath = "/Home/Index";
+                    options.ExpireTimeSpan = TimeSpan.FromDays(AuthCookieDefaultExpireDays);
                     options.SlidingExpiration = true;
-                    options.AccessDeniedPath = "/Forbidden/";
+                    options.Cookie.HttpOnly = true;
                 });
 
             builder.Services
@@ -41,6 +42,8 @@ namespace Blog.Web
                 .AddScoped<IApplicationUserService, ApplicationUserService>()
                 .AddScoped<IArticleService, ArticleService>()
                 .AddScoped<IPasswordHasher<ApplicationUser>, PasswordHasher<ApplicationUser>>();
+
+            builder.Services.AddRazorPages();
 
             var app = builder.Build();
 

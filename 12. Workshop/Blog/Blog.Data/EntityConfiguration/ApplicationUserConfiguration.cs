@@ -21,6 +21,14 @@ public class ApplicationUserConfiguration : IEntityTypeConfiguration<Application
 
         builder.Property(e => e.Password)
             .IsRequired()
-            .HasMaxLength(PasswordMaxLength);
+            .HasMaxLength(HashedPasswordMaxLength);
+
+        builder
+            .HasIndex(e => e.Username)
+            .IsUnique();
+
+        builder
+            .HasIndex(e => e.Email)
+            .IsUnique();
     }
 }

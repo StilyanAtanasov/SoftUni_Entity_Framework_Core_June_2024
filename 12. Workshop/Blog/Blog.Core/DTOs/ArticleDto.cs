@@ -1,6 +1,6 @@
 ﻿namespace Blog.Core.DTOs;
 
-public class ArticleCardDto
+public class ArticleDto
 {
     public int Id { get; set; }
 

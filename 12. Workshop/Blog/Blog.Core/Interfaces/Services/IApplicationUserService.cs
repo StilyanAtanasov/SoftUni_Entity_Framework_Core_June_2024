@@ -6,5 +6,7 @@ public interface IApplicationUserService
 {
     Task AddUserAsync(ApplicationUserDto dto);
 
-    Task<ApplicationUserDto?> GetUserByUsername(string username);
+    Task LogInAsync(LogInUserDto dto);
+
+    Task LogOutAsync();
 }
