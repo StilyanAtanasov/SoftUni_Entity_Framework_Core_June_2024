@@ -16,3 +16,68 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    -webkit-flex: 1;
+    -ms-flex: 1;
+    -o-flex: 1;
+    flex: 1;
+}
+
+footer {
+    padding: 1.2rem;
+}
+
+footer p {
+    margin: 0 0 0 1rem;
+}
+
+.navbar {
+    padding: 0.8rem;
+}
+
+.cards {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    justify-items: center;
+    margin: 2rem;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    -o-justify-content: space-around;
+    -webkit-justify-content: space-around;
+    justify-content: space-around;
+    min-height: 35vh;
+    width: 100%;
+}
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    text-align: start;
+}
+
+.card-buttons {
+    display: flex;
+    gap: 0.2rem;
+    justify-content: space-around
+}
+
+.card-buttons * {
+    flex: 1;
+    width: 100%;
+}

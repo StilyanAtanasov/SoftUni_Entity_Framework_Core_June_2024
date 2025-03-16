@@ -4,18 +4,21 @@
     ViewData["Title"] = "All Articles";
 }
 
-<h1 class="text-center">@ViewBag.Title</h1>
+<h1 class="text-center" style="margin-bottom: 2.5rem">@ViewBag.Title</h1>
 
 
-<div class="text-center row" data-masonry='{"percentPosition": true }'>
+<section class="text-center row cards">
     @foreach (var article in Model)
     {
-        <div class="card col-4" style="width: 20rem;">
+        <div class="card col-4">
             <h3 class="card-title mt-1">@article.Title</h3>
-            <p class="mb-0">@article.Content</p>
-            <p class="mb-0"><span class="fw-bold">Created on: </span>@article.CreatedOn</p>
-            <p class="mb-0"><span class="fw-bold">Author: </span>@article.Author</p>
-            <p><span class="fw-bold">Category: </span>@article.Genre</p>
+	        <p class="mb-0">@article.Content</p>
+	        <section class="card-info">
+		        <p class="mb-0"><span class="fw-bold">Created on: </span>@article.CreatedOn</p>
+		        <p class="mb-0"><span class="fw-bold">Author: </span>@article.Author</p>
+		        <p><span class="fw-bold">Category: </span>@article.Genre</p>
+	        </section>
+            <section class="card-buttons">
             <a asp-controller="Article" asp-action="Details" asp-route-id="@article.Id" class="btn btn-secondary mb-1">Details</a>
             @if(article.Author == User.Identity?.Name)
             {
@@ -24,7 +27,8 @@
 		            <button asp-controller="Article" asp-action="Delete" asp-route-id="@article.Id" class="btn btn-danger mb-1" style="width: 100%;">Delete</button>
 	            </form>
             }
+            </section>
         </div>
     }
-</div>
+</section>
 

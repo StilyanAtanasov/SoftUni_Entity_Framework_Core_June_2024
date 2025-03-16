@@ -1,5 +1,6 @@
 ﻿using Blog.Core.DTOs;
 using Blog.Core.Entities;
+using Blog.Core.Entities.Enums;
 using Blog.Core.Exceptions;
 using Blog.Core.Interfaces.Repository;
 using Blog.Core.Interfaces.Services;
@@ -70,6 +71,28 @@ public class ArticleService : IArticleService
                 Author = a.Author.Username,
             })
             .ToArray();
+
+    public async Task<ArticleDto> UpdateArticleAsync(UpdateArticleDto dto)
+    {
+        Article article = (await _repository.FindByExpressionAsync<Article>(a => a.Id == dto.Id, a => a.Author))!;
+
+        article.Title = dto.Title;
+        article.Content = dto.Content;
+        article.Genre = dto.Genre;
+
+        _repository.Update(article);
+        await _repository.SaveChangesAsync();
+
+        return new ArticleDto
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Content = article.Content,
+            Genre = article.Genre.ToString(),
+            CreatedOn = article.CreatedOn,
+            Author = article.Author.Username,
+        };
+    }
 
     public async Task<int> DeleteArticleAsync(int id)
     {

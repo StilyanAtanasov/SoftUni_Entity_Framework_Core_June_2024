@@ -1,4 +1,4 @@
-﻿@model ArticleAddViewModel;
+﻿@model AddArticleViewModel;
 
 @{
     ViewBag.Title = "Create a New Article";
@@ -20,16 +20,11 @@
                 <textarea rows="7" asp-for="Content" class="form-control" aria-required="true"></textarea>
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="GenreId" class="form-label">Genre</label>
-                <select asp-for="GenreId" class="form-control">
-                    @foreach (var category in ViewBag.Genres)
-                    {
-                        <option value="@category.Value">@category.Text</option>
-                    }
-                </select>
-                <span asp-validation-for="GenreId" class="text-danger"></span>
-            </div>
+	        <div class="mb-3">
+		        <label asp-for="GenreId" class="form-label">Genre</label>
+		        <select asp-for="GenreId" asp-items="Model.Genres" class="form-control"></select>
+		        <span asp-validation-for="GenreId" class="text-danger"></span>
+	        </div>
             <div class="mb-3 text-center">
                 <input class="btn btn-primary" type="submit" value="Add" />
             </div>

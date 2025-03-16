@@ -19,25 +19,24 @@ public class ArticleController : Controller
     [Authorize]
     public IActionResult Add()
     {
-        var genres = Enum.GetValues(typeof(Genre))
-            .Cast<Genre>()
-            .Select(g => new SelectListItem
-            {
-                Value = ((int)g).ToString(),
-                Text = g.ToString()
-            }).ToList();
+        AddArticleViewModel model = new()
+        {
+            Genres = GetGenres()
+        };
 
-        ViewBag.Genres = genres;
-
-        return View();
+        return View(model);
     }
 
     [HttpPost]
     [Authorize]
-    public async Task<IActionResult> Add(ArticleAddViewModel model)
+    public async Task<IActionResult> Add(AddArticleViewModel model)
     {
         if (!(User.Identity?.IsAuthenticated ?? false)) RedirectToAction("Index", "Home");
-        if (!ModelState.IsValid) return View(model);
+        if (!ModelState.IsValid)
+        {
+            model.Genres = GetGenres();
+            return View(model);
+        }
 
         try
         {
@@ -66,7 +65,7 @@ public class ArticleController : Controller
                 Id = a.Id,
                 Title = a.Title,
                 Content = a.Content,
-                Genre = a.Genre.ToString(),
+                Genre = a.Genre,
                 CreatedOn = a.CreatedOn,
                 Author = a.Author,
             })
@@ -94,7 +93,42 @@ public class ArticleController : Controller
         return View(model);
     }
 
+    [HttpGet]
+    [Authorize]
+    public async Task<IActionResult> Edit(int? id)
+    {
+        if (id == null) return RedirectToAction("All");
+
+        ArticleDto dto = await _articleService.GetArticle(id.Value);
+
+        AddArticleViewModel model = new()
+        {
+            Title = dto.Title,
+            Content = dto.Content,
+            GenreId = (int)Enum.Parse<Genre>(dto.Genre),
+            Genres = GetGenres()
+        };
+
+        return View(model);
+    }
+
     [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Edit(UpdateArticleViewModel model)
+    {
+        ArticleDto article = await _articleService.UpdateArticleAsync(new UpdateArticleDto
+        {
+            Id = model.Id,
+            Title = model.Title,
+            Content = model.Content,
+            Genre = (Genre)model.GenreId
+        });
+
+        return RedirectToAction("Details", article);
+    }
+
+    [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Delete(int? id)
     {
         if (id == null) return RedirectToAction("All");
@@ -102,4 +136,14 @@ public class ArticleController : Controller
         await _articleService.DeleteArticleAsync(id.Value);
         return RedirectToAction("All");
     }
+
+    private List<SelectListItem> GetGenres()
+        => Enum.GetValues(typeof(Genre))
+            .Cast<Genre>()
+            .Select(g => new SelectListItem
+            {
+                Value = ((int)g).ToString(),
+                Text = g.ToString()
+            })
+            .ToList();
 }

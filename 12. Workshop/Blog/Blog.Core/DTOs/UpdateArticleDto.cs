@@ -2,8 +2,9 @@
 
 namespace Blog.Core.DTOs;
 
-public class AddArticleDto
+public class UpdateArticleDto
 {
+    public int Id { get; set; }
     public string Title { get; set; } = null!;
 
     public string Content { get; set; } = null!;

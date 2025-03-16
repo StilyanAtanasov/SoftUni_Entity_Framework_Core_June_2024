@@ -1,4 +1,4 @@
-﻿@* @model ArticleEditViewModel;
+﻿@model AddArticleViewModel;
 
 @{
     ViewBag.Title = "Edit Article";
@@ -20,16 +20,11 @@
                 <input asp-for="Content" class="form-control" aria-required="true" />
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
-            <div class="mb-3">
-                <label asp-for="@Model.CategoryId" class="form-label">Genre</label>
-                <select asp-for="@Model.CategoryId" class="form-control">
-                    @foreach (var category in Model.Categories)
-                    {
-                        <option value="@category.Id">@category.Name</option>
-                    }
-                </select>
-                <span asp-validation-for="CategoryId" class="text-danger"></span>
-            </div>
+	        <div class="mb-3">
+		        <label asp-for="GenreId" class="form-label">Genre</label>
+		        <select asp-for="GenreId" asp-items="Model.Genres" class="form-control"></select>
+		        <span asp-validation-for="GenreId" class="text-danger"></span>
+	        </div>
             <div class="mb-3 text-center">
                 <input class="btn btn-primary" type="submit" value="Edit" />
             </div>
@@ -41,4 +36,3 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
 }
- *@

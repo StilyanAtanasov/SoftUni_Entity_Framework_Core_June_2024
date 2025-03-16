@@ -7,7 +7,9 @@ public interface IArticleService
 
     Task<ArticleDto> GetArticle(int id);
 
-    Task<int> DeleteArticleAsync(int id);
-
     ArticleDto[] AllArticlesAsync();
+
+    Task<ArticleDto> UpdateArticleAsync(UpdateArticleDto dto);
+
+    Task<int> DeleteArticleAsync(int id);
 }
